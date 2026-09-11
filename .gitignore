@@ -1,4 +1,4 @@
-﻿# Compiled Java / Maven artifacts
+# Compiled Java / Maven artifacts
 **/target/
 **/*.class
 **/*.jar
@@ -28,6 +28,10 @@ Thumbs.db
 **/logs/
 *.log
 
-# Environment variables
+# Environment variables & secrets
+**/.env
 **/.env.local
 **/.env.*.local
+**/.env.production
+**/.env.development
+!**/.env.example
