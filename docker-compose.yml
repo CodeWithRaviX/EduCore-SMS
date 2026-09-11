@@ -1,0 +1,27 @@
+﻿version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./school-management-backend
+      dockerfile: Dockerfile
+    container_name: school_management_backend
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - DATABASE_URL=jdbc:postgresql://ep-quiet-hall-b3krws99-pooler.c-4.ap-southeast-1.aws.neon.tech:5432/neondb?sslmode=require
+      - DATABASE_USERNAME=neondb_owner
+      - DATABASE_PASSWORD=npg_IcvB23TaYCHO
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./school-management-frontend
+      dockerfile: Dockerfile
+    container_name: school_management_frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
