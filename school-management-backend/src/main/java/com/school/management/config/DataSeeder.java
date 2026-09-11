@@ -17,25 +17,45 @@ public class DataSeeder implements CommandLineRunner {
     private final StudentRepository studentRepository;
     private final AttendanceRepository attendanceRepository;
     private final FeeRepository feeRepository;
+    private final UserRepository userRepository;
 
     public DataSeeder(
             ClassRepository classRepository,
             TeacherRepository teacherRepository,
             StudentRepository studentRepository,
             AttendanceRepository attendanceRepository,
-            FeeRepository feeRepository) {
+            FeeRepository feeRepository,
+            UserRepository userRepository) {
         this.classRepository = classRepository;
         this.teacherRepository = teacherRepository;
         this.studentRepository = studentRepository;
         this.attendanceRepository = attendanceRepository;
         this.feeRepository = feeRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
     public void run(String... args) {
-        // Seed only if database is completely fresh
+        // Seed users if none exist
+        seedUsers();
+
+        // Seed only if database classes are completely fresh
         if (classRepository.count() == 0) {
             seedClassesTeachersAndStudents();
+        }
+    }
+
+    private void seedUsers() {
+        if (userRepository.count() == 0) {
+            List<User> users = new ArrayList<>();
+            // Principal / Admin
+            users.add(new User("principal@school.com", "admin123", "Dr. Alok Verma (Principal)", "ROLE_PRINCIPAL", null));
+            users.add(new User("admin@school.com", "admin123", "Super Admin", "ROLE_PRINCIPAL", null));
+            // Demo Teachers
+            users.add(new User("teacher@school.com", "teacher123", "Pooja Sharma (Teacher)", "ROLE_TEACHER", null));
+            users.add(new User("rajesh.sharma@school.edu", "teacher123", "Dr. Rajesh Sharma", "ROLE_TEACHER", 1L));
+            users.add(new User("priya.sundaram@school.edu", "teacher123", "Priya Sundaram", "ROLE_TEACHER", 2L));
+            userRepository.saveAll(users);
         }
     }
 

@@ -7,4 +7,22 @@ const api = axios.create({
   },
 });
 
+api.interceptors.request.use((config) => {
+  try {
+    const savedUser = localStorage.getItem('educore_user');
+    if (savedUser) {
+      const user = JSON.parse(savedUser);
+      if (user.token) {
+        config.headers.Authorization = `Bearer ${user.token}`;
+      }
+      if (user.role) {
+        config.headers['X-User-Role'] = user.role;
+      }
+    }
+  } catch (e) {
+    console.error('Error attaching auth headers:', e);
+  }
+  return config;
+});
+
 export default api;

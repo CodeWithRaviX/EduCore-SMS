@@ -3,8 +3,10 @@ import teacherService from '../services/teacherService';
 import classService from '../services/classService';
 import TeacherForm from '../components/TeacherForm';
 import ConfirmDialog from '../components/ConfirmDialog';
+import { useAuth } from '../context/AuthContext';
 
 const Teachers = () => {
+  const { isPrincipal } = useAuth();
   const [teachers, setTeachers] = useState([]);
   const [classes, setClasses] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -62,7 +64,7 @@ const Teachers = () => {
       loadData();
     } catch (err) {
       console.error(err);
-      const msg = err.response?.data?.message || 'Failed to save teacher record.';
+      const msg = err.response?.data?.message || 'Failed to save teacher record. (Requires Principal permission)';
       showToast('danger', msg);
     }
   };
@@ -77,7 +79,7 @@ const Teachers = () => {
       loadData();
     } catch (err) {
       console.error(err);
-      const msg = err.response?.data?.message || 'Failed to delete teacher.';
+      const msg = err.response?.data?.message || 'Failed to delete teacher. (Requires Principal permission)';
       showToast('danger', msg);
       setShowConfirm(false);
     }
@@ -90,15 +92,21 @@ const Teachers = () => {
           <h1 className="page-title">Faculty & Teachers</h1>
           <p className="page-subtitle">Manage teaching staff, departmental subjects, and assigned classroom duties.</p>
         </div>
-        <button
-          className="btn btn-primary d-flex align-items-center gap-2"
-          onClick={() => {
-            setEditingTeacher(null);
-            setShowFormModal(true);
-          }}
-        >
-          <i className="bi bi-person-plus-fill"></i> Add Teacher
-        </button>
+        {isPrincipal ? (
+          <button
+            className="btn btn-primary d-flex align-items-center gap-2"
+            onClick={() => {
+              setEditingTeacher(null);
+              setShowFormModal(true);
+            }}
+          >
+            <i className="bi bi-person-plus-fill"></i> Add Teacher
+          </button>
+        ) : (
+          <span className="badge bg-secondary-subtle text-secondary border px-3 py-2 d-inline-flex align-items-center gap-1 shadow-sm">
+            <i className="bi bi-shield-lock-fill"></i> Read-Only (Only Principal can add/edit teachers)
+          </span>
+        )}
       </div>
 
       {notification.message && (
@@ -120,7 +128,9 @@ const Teachers = () => {
             <div className="empty-state">
               <i className="bi bi-person-badge"></i>
               <h5>No Teachers Registered</h5>
-              <p className="text-muted">Click "Add Teacher" above to register faculty members.</p>
+              <p className="text-muted">
+                {isPrincipal ? 'Click "Add Teacher" above to register faculty members.' : 'No faculty records found.'}
+              </p>
             </div>
           ) : (
             <table className="table table-custom">
@@ -159,28 +169,34 @@ const Teachers = () => {
                       )}
                     </td>
                     <td className="text-end">
-                      <div className="d-inline-flex gap-1">
-                        <button
-                          className="action-btn edit"
-                          title="Edit Teacher"
-                          onClick={() => {
-                            setEditingTeacher(teacher);
-                            setShowFormModal(true);
-                          }}
-                        >
-                          <i className="bi bi-pencil-fill"></i>
-                        </button>
-                        <button
-                          className="action-btn delete"
-                          title="Delete Teacher"
-                          onClick={() => {
-                            setTeacherToDelete(teacher);
-                            setShowConfirm(true);
-                          }}
-                        >
-                          <i className="bi bi-trash-fill"></i>
-                        </button>
-                      </div>
+                      {isPrincipal ? (
+                        <div className="d-inline-flex gap-1">
+                          <button
+                            className="action-btn edit"
+                            title="Edit Teacher"
+                            onClick={() => {
+                              setEditingTeacher(teacher);
+                              setShowFormModal(true);
+                            }}
+                          >
+                            <i className="bi bi-pencil-fill"></i>
+                          </button>
+                          <button
+                            className="action-btn delete"
+                            title="Delete Teacher"
+                            onClick={() => {
+                              setTeacherToDelete(teacher);
+                              setShowConfirm(true);
+                            }}
+                          >
+                            <i className="bi bi-trash-fill"></i>
+                          </button>
+                        </div>
+                      ) : (
+                        <span className="badge bg-light text-muted border px-2 py-1" style={{ fontSize: '0.75rem' }}>
+                          <i className="bi bi-lock me-1"></i> Read Only
+                        </span>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -189,7 +205,6 @@ const Teachers = () => {
           )}
         </div>
       </div>
-
       {/* Add / Edit Form Modal */}
       <TeacherForm
         show={showFormModal}

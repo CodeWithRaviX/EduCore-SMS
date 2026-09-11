@@ -6,13 +6,27 @@ A clean, robust, beginner-to-intermediate full-stack web application designed fo
 
 ## 📌 1. Project Overview
 
-The School Management System allows school administrators to manage:
+The School Management System allows school administrators and teachers to manage:
+- **Authentication & RBAC**: Role-based access control with distinct **Principal (Admin)** and **Teacher** roles.
+  - 👑 **Principal / Admin**: Full administrative rights (add/edit/delete teachers, students, classes, and fees).
+  - 👨‍🏫 **Teacher**: Read-only access to faculty directory; can mark student attendance and view classes. **Cannot add or delete other teachers.**
 - **Students**: Complete profile management (name, email, phone, DOB, gender, address) and classroom enrollment.
 - **Teachers**: Faculty directory with assigned subjects and classroom associations.
 - **Classes**: Grade & section management (e.g. 10-A, 10-B) with room numbers and dynamic student headcount.
 - **Attendance**: Daily student attendance roster marking (Present/Absent), historical date queries, and real-time attendance percentage calculation `(Present / Total) × 100`.
-- **Fee Management**: Tuition invoice ledger with payment status tracking (Paid vs. Pending) and quick one-click payment settlement.
-- **Executive Dashboard**: High-level KPI metrics (Total Students, Teachers, Classes, Present/Absent Today, Total Outstanding Fees) and quick glance widgets.
+- **Fee Management**: Tuition invoice ledger in **₹ (INR)** with printable official receipts.
+- **Executive Dashboard**: High-level KPI metrics and quick glance widgets.
+
+---
+
+## 🔑 Demo Login Credentials
+
+| Role | Email | Password | Permissions |
+| :--- | :--- | :--- | :--- |
+| **👑 Principal / Admin** | `principal@school.com` | `admin123` | **Full Access** (Can add/edit/delete teachers, students, classes, fees, dashboard) |
+| **👑 Super Admin** | `admin@school.com` | `admin123` | **Full Access** |
+| **👨‍🏫 Lead Teacher** | `teacher@school.com` | `teacher123` | **Teacher Access** (Mark attendance, view students; **Cannot** add/edit/delete teachers) |
+| **👨‍🏫 Math Teacher** | `rajesh.sharma@school.edu` | `teacher123` | **Teacher Access** |
 
 ---
 

@@ -1,7 +1,10 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
 import Sidebar from './components/Sidebar';
 import Navbar from './components/Navbar';
+import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Students from './pages/Students';
 import Teachers from './pages/Teachers';
@@ -10,28 +13,89 @@ import Attendance from './pages/Attendance';
 import Fees from './pages/Fees';
 import './App.css';
 
-function App() {
+const AuthenticatedLayout = ({ children }) => {
   return (
-    <Router>
+    <ProtectedRoute>
       <div className="app-container">
         <Sidebar />
         <div className="main-wrapper">
           <Navbar />
-          <main className="content-area">
-            <Routes>
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/students" element={<Students />} />
-              <Route path="/teachers" element={<Teachers />} />
-              <Route path="/classes" element={<Classes />} />
-              <Route path="/attendance" element={<Attendance />} />
-              <Route path="/fees" element={<Fees />} />
-              <Route path="*" element={<Navigate to="/dashboard" replace />} />
-            </Routes>
-          </main>
+          <main className="content-area">{children}</main>
         </div>
       </div>
-    </Router>
+    </ProtectedRoute>
+  );
+};
+
+function App() {
+  return (
+    <AuthProvider>
+      <Router>
+        <Routes>
+          {/* Public Login Route */}
+          <Route path="/login" element={<Login />} />
+
+          {/* Protected Application Routes */}
+          <Route
+            path="/"
+            element={
+              <AuthenticatedLayout>
+                <Navigate to="/dashboard" replace />
+              </AuthenticatedLayout>
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={
+              <AuthenticatedLayout>
+                <Dashboard />
+              </AuthenticatedLayout>
+            }
+          />
+          <Route
+            path="/students"
+            element={
+              <AuthenticatedLayout>
+                <Students />
+              </AuthenticatedLayout>
+            }
+          />
+          <Route
+            path="/teachers"
+            element={
+              <AuthenticatedLayout>
+                <Teachers />
+              </AuthenticatedLayout>
+            }
+          />
+          <Route
+            path="/classes"
+            element={
+              <AuthenticatedLayout>
+                <Classes />
+              </AuthenticatedLayout>
+            }
+          />
+          <Route
+            path="/attendance"
+            element={
+              <AuthenticatedLayout>
+                <Attendance />
+              </AuthenticatedLayout>
+            }
+          />
+          <Route
+            path="/fees"
+            element={
+              <AuthenticatedLayout>
+                <Fees />
+              </AuthenticatedLayout>
+            }
+          />
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 
