@@ -1,4 +1,4 @@
-﻿package com.school.management.repository;
+package com.school.management.repository;
 
 import com.school.management.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;

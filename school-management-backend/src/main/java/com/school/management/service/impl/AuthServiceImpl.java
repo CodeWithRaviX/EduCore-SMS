@@ -1,4 +1,4 @@
-﻿package com.school.management.service.impl;
+package com.school.management.service.impl;
 
 import com.school.management.dto.AuthResponse;
 import com.school.management.dto.LoginRequest;
